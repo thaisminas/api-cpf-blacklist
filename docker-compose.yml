@@ -1,0 +1,40 @@
+version: '3.7'
+
+services:
+
+  database:
+    image: postgres
+    container_name: database
+    restart: always
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=cpf_blacklist
+    volumes:
+      - pgdata:/data/postgres
+
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+  app:
+    build: .
+    container_name: cpf_blacklist
+    ports:
+      - 3080:3080
+    volumes:
+      - .:/usr/apps
+    links: 
+      - database
+    depends_on:
+      - database
+
+
+volumes:
+  pgdata:
+    driver: local
